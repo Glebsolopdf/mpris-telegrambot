@@ -244,8 +244,6 @@ On most systems the path is under `XDG_RUNTIME_DIR`, for example `/run/user/1000
 - `mpris-tg-status.pid` stores the background service PID.
 - `shutdown_restore.txt` is a temporary control file used during shutdown.
 
-`avatar_cooldown.json` is not used. Avatar cooldown is process-local memory only.
-
 ## Delete Local Data
 
 Remove local data created by the app without deleting source files or binaries:
