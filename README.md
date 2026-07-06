@@ -115,15 +115,15 @@ Full example:
 ```sh
 TELEGRAM_BOT_TOKEN=123456:token
 TELEGRAM_TARGET_USER_ID=123456789
-PREFERRED_PLAYER=spotify
+PREFERRED_PLAYER=Spotify, Youtube
 DEFAULT_BIO=
 DEFAULT_AVATAR_PATH=default_avatar.png
 DEFAULT_FIRST_NAME=
 DEFAULT_LAST_NAME=
-ACTIVE_BIO_TEMPLATE={emoji_bio} Listening now: {artist} -- {title}
+ACTIVE_BIO_TEMPLATE={emoji_bio} {time} Listening now: {artist} -- {title}
 ACTIVE_FIRST_NAME_TEMPLATE={emoji_name} {default_first_name}
-ACTIVE_NAME_EMOJIS=
-ACTIVE_BIO_EMOJIS=
+ACTIVE_NAME_EMOJIS=🎵,🎶,〽️,📻,🎧,🎸,🎹,🥁,🎺,🎻,🔊,🎼
+ACTIVE_BIO_EMOJIS=🎵,🎶,〽️,📻,🎧,🎸,🎹,🥁,🎺,🎻,🔊,🎼
 GENERATED_AVATAR_ENABLED=true
 POLL_INTERVAL=20s
 NO_PLAYER_POLL_INTERVAL=3m
@@ -141,13 +141,15 @@ USE_MS_ALIAS=false
 
 ## Important Options
 
-`PREFERRED_PLAYER` matches the MPRIS bus name. Use `spotify` for Spotify. When it is set to a player name, Firefox, Chrome, YouTube, and other players are ignored. Set `PREFERRED_PLAYER=all` or leave it empty to accept any MPRIS player.
+`PREFERRED_PLAYER` matches the MPRIS bus name. Use `spotify` for Spotify. Set multiple players with commas, for example `PREFERRED_PLAYER=Spotify, Youtube`. When it is set, Firefox, Chrome, and other non-matching players are ignored. Set `PREFERRED_PLAYER=all` or leave it empty to accept any MPRIS player.
 
 `DEFAULT_BIO`, `DEFAULT_FIRST_NAME`, `DEFAULT_LAST_NAME`, and `DEFAULT_AVATAR_PATH` are restored when playback stops or when you choose to restore the profile on shutdown.
 
-`ACTIVE_BIO_TEMPLATE` controls the bio while music is playing. `ACTIVE_FIRST_NAME_TEMPLATE` controls the active profile first name. Available placeholders are `{emoji_name}`, `{emoji_bio}`, `{emoji}`, `{artist}`, `{title}`, and `{default_first_name}`. `{emoji}` is kept for older configs and resolves to the active template's emoji.
+`ACTIVE_BIO_TEMPLATE` controls the bio while music is playing. `ACTIVE_FIRST_NAME_TEMPLATE` controls the active profile first name. Use `\n` for line breaks. Available placeholders are `{emoji_name}`, `{emoji_bio}`, `{emoji}`, `{artist}`, `{title}`, `{time}`, `{track_url}`, `{url}`, and `{default_first_name}`. `{emoji}` is kept for older configs and resolves to the active template's emoji. `{track_url}` and `{url}` use the MPRIS `xesam:url` value when the player exposes it.
 
-`ACTIVE_NAME_EMOJIS` and `ACTIVE_BIO_EMOJIS` customize the emoji pool for each template. Leave them empty to use the same random music emoji for name and bio. Use comma-separated values such as `🎧,🎵,🔥`. Set either value to `false` to make that emoji variable empty. Example: `ACTIVE_BIO_TEMPLATE={emoji_bio} Listening: {artist} — {title}`.
+Bio text is always kept within Telegram's 140-character limit. When a template is too long, the app shortens `{artist}` and `{title}` first so fixed text, `{time}`, and `{track_url}` have the best chance to stay intact.
+
+`ACTIVE_NAME_EMOJIS` and `ACTIVE_BIO_EMOJIS` customize the emoji pool for `{emoji_name}` and `{emoji_bio}`. The generated `.env` includes a basic comma-separated music emoji set for both variables. Leave either value empty to use the same random music emoji for name and bio. Set either value to `false` to make that emoji variable empty. Example: `ACTIVE_BIO_TEMPLATE={emoji_bio} Listening: {artist} — {title}`.
 
 `GENERATED_AVATAR_ENABLED=false` disables generated album-cover avatars while keeping name and bio updates active.
 
@@ -243,6 +245,8 @@ On most systems the path is under `XDG_RUNTIME_DIR`, for example `/run/user/1000
 - `business_connection.json` stores the Telegram Business connection ID.
 - `mpris-tg-status.pid` stores the background service PID.
 - `shutdown_restore.txt` is a temporary control file used during shutdown.
+
+`avatar_cooldown.json` is not used. Avatar cooldown is process-local memory only.
 
 ## Delete Local Data
 
